@@ -11,24 +11,51 @@ sq::sq(int x,int y,bool mine,QImage* image)
     flag->hide();
 
     parent->installEventFilter(this);
+    button->installEventFilter(this);
+
+    left_pressed=right_pressed=false;
 }
 bool sq::eventFilter(QObject *obj,QEvent *event)
 {
-    if(obj == parent)
+    if(obj != parent && obj != button ) return QObject::eventFilter(obj,event);
+
+    if(event->type() == QEvent::MouseButtonPress)
     {
-        if(event->type() == QEvent::MouseButtonPress
-&& static_cast<QMouseEvent *>(event) ->button()== Qt::RightButton
-            )
-        {
-            if(!swped)
-                flag->setVisible(flag->isHidden());
-            return true;
+         switch( static_cast<QMouseEvent*>(event) ->button() )
+         {
+             case Qt::LeftButton : { left_pressed=true; break;}
+             case Qt::RightButton :{right_pressed=true; return true;}
         }
-        else
-            return false;
     }
-    else
-        return QObject::eventFilter(obj,event);
+    else 
+    if(event->type() == QEvent::MouseButtonRelease)
+    {
+        switch( static_cast<QMouseEvent *>(event) ->button() )
+        {
+            case Qt::LeftButton :
+                {
+                    left_pressed=false;
+                    if(right_pressed)
+                        puts("L+R");
+                    break;
+                }
+            case Qt::RightButton :
+                {
+                    right_pressed=false;
+                    if(left_pressed)
+                        puts("R+L");
+                    else
+                    {
+                        if(!swped)
+                            flag->setVisible(flag->isHidden());
+                    }
+                    return true;
+                    break;
+                }
+        }
+    }
+    
+    return false;
 }
 void sq::update()
 {

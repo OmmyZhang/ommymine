@@ -7,8 +7,8 @@ void Body::play(int nn,int mm,int dif)
     srand(clock());
   
     show();
-    setMinimumSize(m*34+15,n*34+45);
-    resize(m*34+20,n*34+15);
+    setMinimumSize(m*33+20,n*33+48);
+    resize(m*33+20,n*33+48);
 
     setWindowTitle(QObject::tr(" +1s ! "));
 

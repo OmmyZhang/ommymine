@@ -15,6 +15,7 @@ class sq : public QObject
         bool _mine;
         int around_num;
         bool swped;
+        bool left_pressed,right_pressed;
 
         QGroupBox* parent;
         QLabel* result,*flag;
