@@ -4,7 +4,7 @@ Result::Result()
 {
     text = new QLabel(this);
     
-    again_button = new QPushButton("Play agin");
+    again_button = new QPushButton("Play again");
     exit_button  = new QPushButton("Quit");
 }
 void Result::_run(int x)
@@ -21,7 +21,7 @@ void Result::_run(int x)
     if(x==0)
     {
         setWindowTitle(QObject::tr("Win!"));
-        text->setText("Congratulation!");
+        text->setText("Congratulations!");
         text->setStyleSheet("color:red;");
         text->setFont(QFont("Timers", 20, QFont::Bold));
     }
