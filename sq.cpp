@@ -1,7 +1,7 @@
 #include <sq.h>
 
-sq::sq(int x,int y,bool mine,QImage* image)
-    :_x(x),_y(y),_mine(mine),around_num(0),swped(0)
+sq::sq(int x,int y,bool mine,QImage* image,QImage* _g_image)
+    :_x(x),_y(y),_mine(mine),around_num(0),swped(0),g_image(_g_image)
 {
     parent = new QGroupBox(0);
     result = new QLabel(parent);
@@ -81,6 +81,7 @@ void sq::update()
 
 void sq::sweep()
 {
+	flag->setPixmap(QPixmap::fromImage(g_image->scaled(QSize(30,30))));
     button->hide();
     swped=true;
 }

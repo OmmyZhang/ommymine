@@ -22,11 +22,14 @@ void Body::play(int nn,int mm,int dif)
     MainLayout -> addWidget(l_life);
 
     bool rand_tmp;
-    QImage* image = new QImage("wa.png");
+    
+    image = new QImage("wa.png");
+    g_image = new QImage("wa_g.png");
+
     for(int i=0;i<n;++i)
         for(int j=0;j<m;++j)
         {
-            map[i][j] = new sq(i,j,rand_tmp=(rand()%100 < dif),image);
+            map[i][j] = new sq(i,j,rand_tmp=(rand()%100 < dif),image,g_image);
             rest-=rand_tmp;           
             Layout->addWidget(map[i][j]->parent,i,j);
             
@@ -111,6 +114,14 @@ void Body::sweep_xy(int xy)
 }
 void Body::pre_end(int x)
 {
+    for(int i=0;i<n;++i)
+        for(int j=0;j<m;++j)
+            if(!map[i][j]->_mine)
+                map[i][j]->flag->setPixmap(QPixmap::fromImage(g_image->scaled(QSize(30,30))));
+            else
+                if(map[i][j]->flag->isHidden())
+                    map[i][j]->button->hide();
+
 	DISCON(Smapper,SIGNAL(mapped(int)),this,SLOT(sweep_xy(int)));
 	emit end(x);
 }

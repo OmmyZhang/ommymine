@@ -17,6 +17,8 @@ class Body : public QDialog
         QVBoxLayout *MainLayout;
         QLabel *l_life;
         int life,second;
+    
+        QImage *image,*g_image;
 
         void update_life();
   	

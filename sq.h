@@ -7,7 +7,7 @@ class sq : public QObject
     Q_OBJECT
  
     public:
-        sq(int,int,bool,QImage*);
+        sq(int,int,bool,QImage*,QImage*);
         ~sq() { delete parent;}
         void update();
         
@@ -20,6 +20,7 @@ class sq : public QObject
         QGroupBox* parent;
         QLabel* result,*flag;
         QPushButton* button; 
+        QImage *g_image;
         
         void sweep();
 
