@@ -1,5 +1,6 @@
 #include "body.h"
 #include <ctime>
+#include <QDebug>
 void Body::play(int nn,int mm,int dif)
 {
     n=nn;m=mm;
@@ -14,7 +15,10 @@ void Body::play(int nn,int mm,int dif)
 
     MainLayout = new QVBoxLayout;
     Layout = new QGridLayout;
+    Layout->setContentsMargins(0, 0, 0,0);
+    
     Smapper = new QSignalMapper(this);
+    Amapper = new QSignalMapper(this);
 
     l_life= new QLabel;
     l_life->setFixedSize(140,25);
@@ -26,6 +30,7 @@ void Body::play(int nn,int mm,int dif)
     image = new QImage("wa.png");
     g_image = new QImage("wa_g.png");
 
+
     for(int i=0;i<n;++i)
         for(int j=0;j<m;++j)
         {
@@ -34,10 +39,15 @@ void Body::play(int nn,int mm,int dif)
             Layout->addWidget(map[i][j]->parent,i,j);
             
             CON(map[i][j]->button,SIGNAL(clicked()),Smapper,SLOT(map()));
+            CON(map[i][j],SIGNAL(sweep_all()),Amapper,SLOT(map()));
             
             Smapper->setMapping(map[i][j]->button,i*m+j);
-        } 
-
+            Amapper->setMapping(map[i][j],i*m+j);
+        }
+         
+    CON(Smapper,SIGNAL(mapped(int)),this,SLOT(sweep_xy(int)));
+    CON(Amapper,SIGNAL(mapped(int)),this,SLOT(sw_all(int)));
+    
     life = (m*n-rest) / 10 + 1;
     second=0;
     update_life();
@@ -55,13 +65,22 @@ void Body::play(int nn,int mm,int dif)
     MainLayout -> addLayout(Layout);
     setLayout(MainLayout);
         
-    CON(Smapper,SIGNAL(mapped(int)),this,SLOT(sweep_xy(int)));
+
 }
 void Body::update_life()
 {
 	l_life->setText(QString::number(life,10)+QString(" life(s) ")+QString::number(second,10)+QString(" second(s)"));
 }
 
+void Body::sw_all(int xy)
+{
+    int i = xy / m;
+    int j = xy % m;
+    if(map[i][j]->button->isHidden())
+    {
+        qDebug() << i << j <<endl;
+    }
+}
 void Body::sweep_xy(int xy)
 {
     int i = xy / m;

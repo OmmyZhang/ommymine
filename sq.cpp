@@ -3,12 +3,14 @@
 sq::sq(int x,int y,bool mine,QImage* image,QImage* _g_image)
     :_x(x),_y(y),_mine(mine),around_num(0),swped(0),g_image(_g_image)
 {
-    parent = new QGroupBox(0);
+    parent = new QWidget(0);
     result = new QLabel(parent);
     button = new QPushButton(parent);
     flag = new QLabel(parent);
     flag->setPixmap(QPixmap::fromImage(image->scaled(QSize(30,30))));
     flag->hide();
+
+    //button->hide();
 
     parent->installEventFilter(this);
     button->installEventFilter(this);
@@ -23,8 +25,9 @@ bool sq::eventFilter(QObject *obj,QEvent *event)
     {
          switch( static_cast<QMouseEvent*>(event) ->button() )
          {
-             case Qt::LeftButton : { left_pressed=true; break;}
-             case Qt::RightButton :{right_pressed=true; return true;}
+            case Qt::LeftButton : { left_pressed=true; break;}
+            case Qt::RightButton :{right_pressed=true; return true;}
+            default: {}
         }
     }
     else 
@@ -36,14 +39,14 @@ bool sq::eventFilter(QObject *obj,QEvent *event)
                 {
                     left_pressed=false;
                     if(right_pressed)
-                        puts("L+R");
+                        emit sweep_all();
                     break;
                 }
             case Qt::RightButton :
                 {
                     right_pressed=false;
                     if(left_pressed)
-                        puts("R+L");
+                        emit sweep_all();
                     else
                     {
                         if(!swped)
@@ -52,6 +55,7 @@ bool sq::eventFilter(QObject *obj,QEvent *event)
                     return true;
                     break;
                 }
+            default: {}
         }
     }
     
@@ -74,9 +78,9 @@ void sq::update()
     result->setFont(QFont("Timers", 17, QFont::Bold));
     result->setAlignment(Qt::AlignCenter); 
 
-    result->resize(28,28);
-    button->resize(28,28);
-    flag->resize(28,28);
+    result->resize(27,27);
+    button->resize(27,27);
+    flag->resize(27,27);
 }
 
 void sq::sweep()

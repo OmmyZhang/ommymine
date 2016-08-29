@@ -12,7 +12,7 @@ class Body : public QDialog
         int n,m;
         int rest;
         void pre_end(int);
-        QSignalMapper *Smapper;
+        QSignalMapper *Smapper,*Amapper;
         QGridLayout *Layout;
         QVBoxLayout *MainLayout;
         QLabel *l_life;
@@ -27,8 +27,11 @@ class Body : public QDialog
   
     public slots:
         void play(int,int,int);
-        void sweep_xy(int);
     
+    private slots:
+        void sweep_xy(int);
+        void sw_all(int);
+
     signals:
         void end(int);
 

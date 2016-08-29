@@ -17,7 +17,7 @@ class sq : public QObject
         bool swped;
         bool left_pressed,right_pressed;
 
-        QGroupBox* parent;
+        QWidget* parent;
         QLabel* result,*flag;
         QPushButton* button; 
         QImage *g_image;
@@ -25,5 +25,7 @@ class sq : public QObject
         void sweep();
 
         bool eventFilter(QObject*,QEvent*);
+    signals:
+        void sweep_all();
 };
 #endif
