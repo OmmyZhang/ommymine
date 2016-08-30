@@ -10,7 +10,7 @@ sq::sq(int x,int y,bool mine,QImage* image,QImage* _g_image)
     flag->setPixmap(QPixmap::fromImage(image->scaled(QSize(30,30))));
     flag->hide();
 
-    //button->hide();
+    button ->setFocusPolicy(Qt::NoFocus);;
 
     parent->installEventFilter(this);
     button->installEventFilter(this);
@@ -23,6 +23,8 @@ bool sq::eventFilter(QObject *obj,QEvent *event)
 
     if(event->type() == QEvent::MouseButtonPress)
     {
+        if(static_cast<QMouseEvent*>(event) ->buttons() == (Qt::LeftButton|Qt::RightButton))
+            emit sweep_pre();
          switch( static_cast<QMouseEvent*>(event) ->button() )
          {
             case Qt::LeftButton : { left_pressed=true; break;}

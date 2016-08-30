@@ -27,5 +27,6 @@ class sq : public QObject
         bool eventFilter(QObject*,QEvent*);
     signals:
         void sweep_all();
+        void sweep_pre();
 };
 #endif

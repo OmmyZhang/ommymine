@@ -19,6 +19,7 @@ void Body::play(int nn,int mm,int dif)
     
     Smapper = new QSignalMapper(this);
     Amapper = new QSignalMapper(this);
+    Pmapper = new QSignalMapper(this);
 
     l_life= new QLabel;
     l_life->setFixedSize(140,25);
@@ -40,14 +41,17 @@ void Body::play(int nn,int mm,int dif)
             
             CON(map[i][j]->button,SIGNAL(clicked()),Smapper,SLOT(map()));
             CON(map[i][j],SIGNAL(sweep_all()),Amapper,SLOT(map()));
-            
+            CON(map[i][j],SIGNAL(sweep_pre()),Pmapper,SLOT(map()));
+
             Smapper->setMapping(map[i][j]->button,i*m+j);
             Amapper->setMapping(map[i][j],i*m+j);
+            Pmapper->setMapping(map[i][j],i*m+j);
         }
          
     CON(Smapper,SIGNAL(mapped(int)),this,SLOT(sweep_xy(int)));
     CON(Amapper,SIGNAL(mapped(int)),this,SLOT(sw_all(int)));
-    
+    CON(Pmapper,SIGNAL(mapped(int)),this,SLOT(sw_pre(int)));
+
     life = (m*n-rest) / 10 + 1;
     second=0;
     update_life();
@@ -72,13 +76,47 @@ void Body::update_life()
 	l_life->setText(QString::number(life,10)+QString(" life(s) ")+QString::number(second,10)+QString(" second(s)"));
 }
 
+void Body::sw_pre(int xy)
+{
+	int i = xy / m;
+    int j = xy % m;
+    if(map[i][j]->button->isHidden() && !map[i][j]->_mine)
+    {
+        qDebug() << i << j <<endl;
+        int ms = map[i][j] ->around_num;
+        if(!ms) return;
+
+        for(int ii=(i?i-1:0);ii<=i+1&&ii<n;++ii)
+             for(int jj=(j?j-1:0);jj<=j+1&&jj<m;++jj)
+                 if(map[ii][jj]->flag->isHidden())
+                    map[ii][jj]->button->setDown(true);
+    }
+}
+
 void Body::sw_all(int xy)
 {
     int i = xy / m;
     int j = xy % m;
-    if(map[i][j]->button->isHidden())
+    if(map[i][j]->button->isHidden() && !map[i][j]->_mine)
     {
         qDebug() << i << j <<endl;
+        int ms = map[i][j] ->around_num;
+        if(!ms) return;
+
+        for(int ii=(i?i-1:0);ii<=i+1&&ii<n;++ii)
+             for(int jj=(j?j-1:0);jj<=j+1&&jj<m;++jj)
+             {
+                map[ii][jj]->button->setDown(false);
+                if( (map[ii][jj]->button->isVisible() && map[ii][jj]->flag->isVisible())
+                            || (map[ii][jj]->button->isHidden() && map[ii][jj]->_mine))
+                    --ms;
+             }
+                    
+        if(!ms)
+          	for(int ii=(i?i-1:0);ii<=i+1&&ii<n;++ii)
+                for(int jj=(j?j-1:0);jj<=j+1&&jj<m;++jj)
+                    if(map[ii][jj]->button->isVisible() && map[ii][jj]->flag->isHidden())
+                        sweep_xy(ii*m+jj);
     }
 }
 void Body::sweep_xy(int xy)
